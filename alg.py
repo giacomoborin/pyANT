@@ -43,3 +43,10 @@ def fermat_ez(number):
             return gcd(math.isqrt(number + h) + math.isqrt(h), number)
         h = h + 2*k + 2*i + 1
         i += 1
+
+
+def main():
+    return gcd(9,8)
+
+if __name__ == "__main__":
+    print(main())
