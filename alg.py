@@ -64,7 +64,8 @@ def lucas_W(a, b, R, Q, n, verbose=False):
                 print( j+1 , yn, end = ' - ', sep = ': ')
     return yn
 
-### Number field sieve
+#===============================================
+### Quadratic sieve
 
 def odd_res(n):
     while(n%2==0):
@@ -112,15 +113,33 @@ def solve_quad(a, p, verbose = False):
     else:
         print('sei scemo?')
 
+def li(n):
+    return math.ceil(n/math.log(n))
+
+def b_smooth_primes(n):
+    prime = [True for i in range(n + 1)]
+    p = 2
+    while (p * p <= n):
+
+        # If prime[p] is not changed, then it is a prime
+        if (prime[p] == True):
+
+            # Update all multiples of p
+            for i in range(p * 2, n + 1, p):
+                prime[i] = False
+        p += 1
+    prime[0] = False
+    prime[1] = False
+    from itertools import compress
+    return [i for i in range(len(prime)) if prime[i]]
+#    return list(compress(range(len(prime)), prime))
+
+
 #def n_f_sieve(n,bound):
 
 
-
-
-
-
 def main():
-    return solve_quad(9,29,True)
+    return b_smooth_primes(100203)
 
 
 if __name__ == "__main__":
