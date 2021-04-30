@@ -13,6 +13,25 @@ def odd_res(n):
         n = n//2
     return (n)
 
+def res_p(n,p):
+    while (n % p == 0):
+        n = n // p
+    return (n)
+
+def v_p(n,p):
+    v = 0
+    while (n % p == 0):
+        n = n // p
+        v += 1
+    return (v)
+
+def v_res_p(n,p):
+    v = 0
+    while (n % p == 0):
+        n = n // p
+        v += 1
+    return [v,n]
+
 def two_k(c,p):
     k = 0
     c = c % p
@@ -26,6 +45,9 @@ def non_quad(p):
         if pow(g , (p-1)//2 , p)== p-1:
             return g
     return
+
+
+#def legendre_qs()
 
 #assuming that p does not divide a, otherwhise it's easy
 def solve_quad(a, p, verbose = False):
@@ -74,3 +96,4 @@ def b_smooth_primes(n):
     from itertools import compress
     return [i for i in range(len(prime)) if prime[i]]
 #    return list(compress(range(len(prime)), prime))
+
