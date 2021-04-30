@@ -47,7 +47,10 @@ def non_quad(p):
     return
 
 
-#def legendre_qs()
+def legendre_qs(n , p):
+    return pow(n, (p - 1) // 2, p)
+
+
 
 #assuming that p does not divide a, otherwhise it's easy
 def solve_quad(a, p, verbose = False):
