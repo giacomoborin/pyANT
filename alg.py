@@ -1,6 +1,7 @@
 import math, random
+import pandas
 
-def printif(string,verb= True):
+def printif(string,verb = True):
     if verb:
         print(string)
 
@@ -24,7 +25,6 @@ def pollard_p_1(number, bound, stamp=False):
 def pollard_rho(number: int, bound=0, a=1, x0=-1) -> int:
     def f(n: int) -> int:
         return (a + n ** 2) % number
-
     if bound == 0:
         bound: int = int(math.sqrt(number))
     if x0 == -1:
@@ -35,6 +35,35 @@ def pollard_rho(number: int, bound=0, a=1, x0=-1) -> int:
         x0 = f(x0)
         if gcd(y0 - x0, number) != 1:
             return gcd(y0 - x0, number)
+
+def poll_rho_diag(p: int, a = 1):
+    def f(n: int) -> int:
+        return (a + n ** 2) % p
+    def poll_conv(x0):
+        x = [x0]
+        xi = x0
+        conv1 = False
+        conv2 = False
+        while (not conv1):
+            xi = f(xi)
+            for j in range(len(x)):
+                if x[j]==xi:
+                    conv1=True
+                    n, nd = j, len(x)
+                    break
+            x.append(xi)
+        t=0
+        xi = x0
+        x2i = x0
+        while not conv2:
+            xi = f(xi)
+            x2i = f(f(x2i))
+            t += 1
+            if xi == x2i:
+                break
+        return [x0, n, nd, t]
+    return [poll_conv(x0) for x0 in range(p)]
+
 
 
 def fermat_ez(number):
@@ -70,9 +99,8 @@ def lucas_W(a, b, R, Q, n, verbose=False):
 
 
 def main():
-    import q_sieve_alg
-    return q_sieve_alg.b_smooth_primes(100203)
+    return poll_rho_diag(13)
 
 
 if __name__ == "__main__":
-    print(main())
+    print(pandas.DataFrame(main()))
