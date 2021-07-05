@@ -42,7 +42,7 @@ def two_k(c,p):
 
 def non_quad(p):
     for g in range(2,p-1):
-        if pow(g , (p-1)//2 , p)== p-1:
+        if pow(g, (p-1)//2, p) == p-1:
             return g
     return
 
@@ -63,8 +63,8 @@ def solve_quad(a, p, verbose = False, prime_out = False):
     g = non_quad(p)
     if m == 3:
         x = pow(a, (p+1)//4, p )
-        # if prime_out:
-        #     return [p, x, p - x]
+        if prime_out:
+            return [p, x, p - x]
         return [x, p-x]
     elif m == 1:
         q = odd_res(p-1)
@@ -77,8 +77,12 @@ def solve_quad(a, p, verbose = False, prime_out = False):
             b = (b * pow(z, int(pow(2, l - k - 1)), p)) % p
             c = (c * pow(z, pow(2, l - k), p)) % p
             z = pow(z, pow(z, pow(2, l - k)), p)
+        if prime_out:
+            return [p, b, p - b]
         return [b, p-b]
     elif p==2:
+        if prime_out:
+            return [2, 1, 1]
         return [1,1]
     else:
         print('sei scemo? stai usando il primo ', p)
@@ -110,8 +114,9 @@ def b_smooth_primes(b):
 #    return list(compress(range(len(prime)), prime))
 
 def b_primes_qres(n,b):
-    r = [solve_quad(n,p) for p in b_smooth_primes(b)]
-    return [[v[0] + v[1]] + v for v in r if v]
+    r = [solve_quad(n,p, prime_out=True) for p in b_smooth_primes(b)]
+    return [v for v in r if v]
+
 
 
 def q_sieve(n,b,M):
@@ -131,10 +136,11 @@ def q_sieve(n,b,M):
             i = (v[2] - sq_ceil(n)) % v[0]
             for j in range(i, M, v[0]):
                 sieve[j] = res_p(sieve[j], v[0])
-    A = [[i ,f[i]]+[v_p(f[i], p) % 2 for p in pp] for i in range(M) if sieve[i] == 1]
+    A = [[i + sq_ceil(n) ,f[i]]+[v_p(f[i], p) % 2 for p in pp] for i in range(M) if sieve[i] == 1]
     return A
 
 # Continua ad: https://handwiki.org/wiki/Quadratic_sieve
 
 if __name__ == '__main__':
-    print(q_sieve(15347,30,100))
+    print('q_sieve_alg.py loaded')
+    #print(q_sieve(15347,30,100))
