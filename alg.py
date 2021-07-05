@@ -61,8 +61,8 @@ def poll_rho_diag(p: int, a = 1):
             t += 1
             if xi == x2i:
                 break
-        return [x0, n, nd, t]
-    return [poll_conv(x0) for x0 in range(p)]
+        return [n, nd, t]
+    return pandas.DataFrame([poll_conv(x0) for x0 in range(p)], columns=['n', 'n+d', 't'])
 
 
 
@@ -103,4 +103,4 @@ def main():
 
 
 if __name__ == "__main__":
-    print(pandas.DataFrame(main()))
+    print(main())
