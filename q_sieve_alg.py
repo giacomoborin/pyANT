@@ -1,75 +1,81 @@
 import math
-#useless stuff
-def printif(string,verb= True):
+
+
+# useless stuff
+def printif(string, verb=True):
     if verb:
         print(string)
 
 
-#===============================================
+# ===============================================
 ### Quadratic sieve
 
 def odd_res(n):
-    while(n%2==0):
-        n = n//2
+    while (n % 2 == 0):
+        n = n // 2
     return (n)
 
-def res_p(n,p):
+
+def res_p(n, p):
     while (n % p == 0):
         n = n // p
     return (n)
 
-def v_p(n,p):
+
+def v_p(n, p):
     v = 0
     while (n % p == 0):
         n = n // p
         v += 1
     return (v)
 
-def v_res_p(n,p):
+
+def v_res_p(n, p):
     v = 0
     while (n % p == 0):
         n = n // p
         v += 1
-    return [v,n]
+    return [v, n]
 
-def two_k(c,p):
+
+def two_k(c, p):
     k = 0
     c = c % p
-    while(c != p-1):
+    while (c != p - 1):
         k += 1
         c = pow(c, 2, p)
     return k
 
+
 def non_quad(p):
-    for g in range(2,p-1):
-        if pow(g, (p-1)//2, p) == p-1:
+    for g in range(2, p - 1):
+        if pow(g, (p - 1) // 2, p) == p - 1:
             return g
     return
 
 
-def legendre_qs(n , p):
+def legendre_qs(n, p):
     return pow(n, (p - 1) // 2, p)
 
 
-
-#assuming that p does not divide a, otherwhise it's easy
-def solve_quad(a, p, verbose = False, prime_out = False):
-    if pow(a , (p-1)//2 , p) != 1:
-        printif('No solutions',verbose)
+# assuming that p does not divide a, otherwhise it's easy
+def solve_quad(a, p, verbose=False, prime_out=False):
+    if pow(a, (p - 1) // 2, p) != 1:
+        printif('No solutions', verbose)
         return []
     printif('Two solutions', verbose)
     m = p % 4
     # find g non quad
     g = non_quad(p)
     if m == 3:
-        x = pow(a, (p+1)//4, p )
+        x = pow(a, (p + 1) // 4, p)
         if prime_out:
             return [p, x, p - x]
-        return [x, p-x]
+        return [x, p - x]
     elif m == 1:
-        q = odd_res(p-1)
+        q = odd_res(p - 1)
         z = pow(g, q, p)
-        b = pow(a, ((q+1)//2), p)
+        b = pow(a, ((q + 1) // 2), p)
         c = pow(a, q, p)
         while c != 1:
             k = two_k(c, p)
@@ -79,16 +85,18 @@ def solve_quad(a, p, verbose = False, prime_out = False):
             z = pow(z, pow(z, pow(2, l - k)), p)
         if prime_out:
             return [p, b, p - b]
-        return [b, p-b]
-    elif p==2:
+        return [b, p - b]
+    elif p == 2:
         if prime_out:
             return [2, 1, 1]
-        return [1,1]
+        return [1, 1]
     else:
         print('sei scemo? stai usando il primo ', p)
 
+
 def li(n):
-    return math.ceil(n/math.log(n))
+    return math.ceil(n / math.log(n))
+
 
 def sq_ceil(n):
     return math.ceil(math.sqrt(n))
@@ -109,38 +117,41 @@ def b_smooth_primes(b):
         p += 1
     prime[0] = False
     prime[1] = False
-#    from itertools import compress
+    #    from itertools import compress
     return [i for i in range(len(prime)) if prime[i]]
+
+
 #    return list(compress(range(len(prime)), prime))
 
-def b_primes_qres(n,b):
-    r = [solve_quad(n,p, prime_out=True) for p in b_smooth_primes(b)]
+def b_primes_qres(n, b):
+    r = [solve_quad(n, p, prime_out=True) for p in b_smooth_primes(b)]
     return [v for v in r if v]
 
 
-
-def q_sieve(n,b,M):
+def q_sieve(n, b, M):
     def f(i):
-        return ((i+sq_ceil(n))**2 - n)
+        return (i + sq_ceil(n)) ** 2 - n
+
     f = [f(i) for i in range(M)]
     sieve = f.copy()
-    vp = b_primes_qres(n,b)
+    vp = b_primes_qres(n, b)
     pp = [v[0] for v in vp]
     for v in vp:
-        # I find a solution to the eqation f(i)=0 mod p using Tonelli-Shanks
+        # I find a solution to the equation f(i)=0 mod p using Tonelli-Shanks
         i = (v[1] - sq_ceil(n)) % v[0]
         # I divide by p ( = v[0] ) the ones that are divisible
-        for j in range(i,M,v[0]):
-            sieve[j] = res_p(sieve[j],v[0])
-        if v[1] != v[2] :
+        for j in range(i, M, v[0]):
+            sieve[j] = res_p(sieve[j], v[0])
+        if v[1] != v[2]:
             i = (v[2] - sq_ceil(n)) % v[0]
             for j in range(i, M, v[0]):
                 sieve[j] = res_p(sieve[j], v[0])
-    A = [[i + sq_ceil(n) ,f[i]]+[v_p(f[i], p) % 2 for p in pp] for i in range(M) if sieve[i] == 1]
+    A = [[i + sq_ceil(n), f[i]] + [v_p(f[i], p) % 2 for p in pp] for i in range(M) if sieve[i] == 1]
     return A
+
 
 # Continua ad: https://handwiki.org/wiki/Quadratic_sieve
 
 if __name__ == '__main__':
     print('q_sieve_alg.py loaded')
-    #print(q_sieve(15347,30,100))
+    # print(q_sieve(15347,30,100))
